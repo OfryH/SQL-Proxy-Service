@@ -4,7 +4,12 @@
 
 std::string SqlAnalyzer::toUpper(const std::string& s) {
     std::string res = s;
-    std::transform(res.begin(), res.end(), res.begin(), ::toupper);
+    std::transform(
+    res.begin(),
+    res.end(),
+    res.begin(),
+    [](unsigned char c){ return std::toupper(c); }
+);
     return res;
 }
 
@@ -26,11 +31,11 @@ AnalysisResult SqlAnalyzer::analyze(const std::string& sql) {
             break;
 
         case StatementType::DDL:
-            //result.tables = extractTablesDdl(sql);
+            result.tables = extractTablesDdl(sql);
             result.columns = {}; // DDL has no meaningful columns
             break;
     }
-
+    result.rawQuery = sql;
     return result;
 }
 
@@ -246,8 +251,41 @@ std::vector<std::string> SqlAnalyzer::extractColumnsDml(const std::string& sql){
     return columns;
 }
 
-std::vector<std::string> SqlAnalyzer::extractTablesDdl(const std::string& sql){
-    
+std::vector<std::string> SqlAnalyzer::extractTablesDdl(const std::string& sql) {
+    std::vector<std::string> tables;
+
+    std::string upper = toUpper(sql);
+
+    // Find the TABLE keyword.
+    // CREATE TABLE, ALTER TABLE, and DROP TABLE all contain it.
+    size_t tablePos = upper.find("TABLE");
+
+    if (tablePos == std::string::npos) {
+        return tables;
+    }
+
+    // The table name appears immediately after TABLE.
+    std::string afterTable = sql.substr(tablePos + 5);
+
+    std::istringstream ss(afterTable);
+
+    std::string tableName;
+    ss >> tableName;
+
+    // Remove possible trailing characters like '(' or ';' from the table name
+    tableName.erase(
+        std::remove_if(tableName.begin(), tableName.end(),
+            [](char c) {
+                return c == '(' || c == ';';
+            }),
+        tableName.end()
+    );
+
+    if (!tableName.empty()) {
+        tables.push_back(tableName);
+    }
+
+    return tables;
 }
 
 
