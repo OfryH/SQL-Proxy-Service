@@ -27,4 +27,9 @@ add_executable(pii_tests
     src/classifier/PiiClassifier.cpp
 )
 
+add_executable(masker_tests
+    tests/test_DataMasker.cpp
+    src/masking/DataMasker.cpp
+)
+
 target_link_libraries(executor_tests mysqlcppconn)
