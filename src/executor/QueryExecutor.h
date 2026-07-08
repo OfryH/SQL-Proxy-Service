@@ -2,6 +2,7 @@
 
 #include <string>
 #include <mysql.h>
+#include "QueryResult.h"
 
 class QueryExecutor
 {
@@ -18,6 +19,8 @@ public:
     );
 
     void disconnect();
+
+    QueryResult execute(const std::string& sql);
 
 private:
     MYSQL* connection_;

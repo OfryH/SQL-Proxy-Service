@@ -55,6 +55,66 @@ bool QueryExecutor::connect(
 }
 
 
+QueryResult QueryExecutor::execute(const std::string& sql)
+{
+    QueryResult result;
+
+    if (connection_ == nullptr)
+    {
+        result.success = false;
+        result.errorMessage = "No database connection";
+        return result;
+    }
+
+    if (mysql_query(connection_, sql.c_str()) != 0)
+    {
+        result.success = false;
+        result.errorMessage = mysql_error(connection_);
+        return result;
+    }
+
+    MYSQL_RES* res = mysql_store_result(connection_);
+
+    // Query that does not return rows (INSERT/UPDATE/DELETE/DDL)
+    if (res == nullptr)
+    {
+        result.success = true;
+        return result;
+    }
+
+    int columns = mysql_num_fields(res);
+
+    MYSQL_FIELD* fields = mysql_fetch_fields(res);
+
+    for (int i = 0; i < columns; i++)
+    {
+        result.columnNames.push_back(fields[i].name);
+    }
+
+    MYSQL_ROW row;
+
+    while ((row = mysql_fetch_row(res)))
+    {
+        std::vector<std::string> currentRow;
+
+        for (int i = 0; i < columns; i++)
+        {
+            currentRow.push_back(
+                row[i] ? row[i] : "NULL"
+            );
+        }
+
+        result.rows.push_back(currentRow);
+    }
+
+    mysql_free_result(res);
+
+    result.success = true;
+
+    return result;
+}
+
+
 void QueryExecutor::disconnect()
 {
     if (connection_)
