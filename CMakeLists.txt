@@ -32,4 +32,9 @@ add_executable(masker_tests
     src/masking/DataMasker.cpp
 )
 
+add_executable(audit_tests
+    tests/test_AuditLogger.cpp
+    src/audit/AuditLogger.cpp
+)
+
 target_link_libraries(executor_tests mysqlcppconn)

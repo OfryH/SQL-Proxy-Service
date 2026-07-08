@@ -37,39 +37,48 @@ void finishTest(const std::string& testName)
 
 void testBasicSelect(SqlAnalyzer& analyzer)
 {
-    auto r = analyzer.analyze("SELECT id, name FROM customers");
+      auto r = analyzer.analyze("SELECT id, name FROM customers");
 
-    check(r.type == StatementType::SELECT,
-          "Expected SELECT statement");
+      check(r.type == StatementType::SELECT,
+            "Expected SELECT statement");
+            
+      check(r.operation == OperationType::SELECT,
+            "Expected SELECT operation"); 
 
-    check(r.tables.size() == 1,
-          "Expected exactly one table");
+      check(r.tables.size() == 1,
+            "Expected exactly one table");
 
-    check(r.tables[0] == "customers",
-          "Expected table 'customers'");
+      check(r.tables[0] == "customers",
+            "Expected table 'customers'");
 
-    finishTest("Basic SELECT");
+      finishTest("Basic SELECT");
 }
 
 void testInsert(SqlAnalyzer& analyzer)
 {
-    auto r = analyzer.analyze("INSERT INTO customers (id) VALUES (1)");
+      auto r = analyzer.analyze("INSERT INTO customers (id) VALUES (1)");
 
-    check(r.type == StatementType::DML,
-          "Expected DML statement");
+      check(r.operation == OperationType::INSERT,
+            "Expected INSERT operation");
 
-    check(r.tables.size() == 1,
-          "Expected exactly one table");
+      check(r.type == StatementType::DML,
+            "Expected DML statement");
 
-    check(r.tables[0] == "customers",
-          "Expected table 'customers'");
+      check(r.tables.size() == 1,
+            "Expected exactly one table");
 
-    finishTest("Basic INSERT");
+      check(r.tables[0] == "customers",
+            "Expected table 'customers'");
+
+      finishTest("Basic INSERT");
 }
 
 void testUpdate(SqlAnalyzer& analyzer)
 {
     auto r = analyzer.analyze("UPDATE customers SET name='x'");
+
+    check(r.operation == OperationType::UPDATE,
+          "Expected UPDATE operation");
 
     check(r.type == StatementType::DML,
           "Expected DML statement");
@@ -93,6 +102,9 @@ void testDelete(SqlAnalyzer& analyzer)
 {
     auto r = analyzer.analyze("DELETE FROM customers");
 
+    check(r.operation == OperationType::DELETE,
+          "Expected DELETE operation");
+
     check(r.type == StatementType::DML,
           "Expected DML statement");
 
@@ -109,6 +121,9 @@ void testCreateTable(SqlAnalyzer& analyzer)
 {
     auto r = analyzer.analyze("CREATE TABLE customers (id INT)");
 
+    check(r.operation == OperationType::DDL,
+          "Expected DDL operation");
+
     check(r.type == StatementType::DDL,
           "Expected DDL statement");
 
@@ -118,6 +133,9 @@ void testCreateTable(SqlAnalyzer& analyzer)
 void testSelectColumns(SqlAnalyzer& analyzer)
 {
     auto r = analyzer.analyze("SELECT id, name, email FROM customers");
+
+    check(r.type == StatementType::SELECT,
+          "Expected SELECT statement");
 
     check(r.columns.size() == 3,
           "Expected 3 selected columns");
@@ -138,6 +156,9 @@ void testSelectStar(SqlAnalyzer& analyzer)
 {
     auto r = analyzer.analyze("SELECT * FROM customers");
 
+    check(r.type == StatementType::SELECT,
+          "Expected SELECT statement");
+
     check(r.columns.size() == 1,
           "Expected one column");
 
@@ -150,6 +171,12 @@ void testSelectStar(SqlAnalyzer& analyzer)
 void testUpdateColumns(SqlAnalyzer& analyzer)
 {
     auto r = analyzer.analyze("UPDATE customers SET name='x', email='y'");
+
+    check(r.type == StatementType::DML,
+          "Expected DML statement");
+
+    check(r.operation == OperationType::UPDATE,
+          "Expected UPDATE operation");
 
     check(r.columns.size() == 2,
           "Expected 2 updated columns");
@@ -165,72 +192,89 @@ void testUpdateColumns(SqlAnalyzer& analyzer)
 
 void testInsertColumns(SqlAnalyzer& analyzer)
 {
-    auto r = analyzer.analyze(
-        "INSERT INTO customers (id, name) VALUES (1, 'x')");
+      auto r = analyzer.analyze(
+            "INSERT INTO customers (id, name) VALUES (1, 'x')");
 
-    check(r.columns.size() == 2,
-          "Expected 2 inserted columns");
+      check(r.type == StatementType::DML,
+            "Expected DML statement");
+      check(r.operation == OperationType::INSERT,
+            "Expected INSERT operation");
 
-    check(r.columns[0] == "id",
-          "First column should be 'id'");
+      check(r.columns.size() == 2,
+            "Expected 2 inserted columns");
 
-    check(r.columns[1] == "name",
-          "Second column should be 'name'");
+      check(r.columns[0] == "id",
+            "First column should be 'id'");
 
-    finishTest("INSERT columns");
+      check(r.columns[1] == "name",
+            "Second column should be 'name'");
+
+      finishTest("INSERT columns");
 }
 
 void testDeleteColumns(SqlAnalyzer& analyzer)
 {
-    auto r = analyzer.analyze("DELETE FROM customers WHERE id=1");
+      auto r = analyzer.analyze("DELETE FROM customers WHERE id=1");
 
-    check(r.columns.size() == 0,
-          "Expected 0 columns for DELETE");
+      check(r.type == StatementType::DML,
+            "Expected DML statement");
 
-    finishTest("DELETE columns");
+      check(r.operation == OperationType::DELETE,
+            "Expected DELETE operation");     
+
+      check(r.columns.size() == 0,
+            "Expected 0 columns for DELETE");
+
+      finishTest("DELETE columns");
 }
 
 void testCreateTableTable(SqlAnalyzer& analyzer)
 {
-    auto r = analyzer.analyze("CREATE TABLE customers (id INT, name VARCHAR(100))");
+      auto r = analyzer.analyze("CREATE TABLE customers (id INT, name VARCHAR(100))");
 
-    check(r.tables.size() == 1,
-          "Expected exactly one table");
+      check(r.type == StatementType::DDL,
+            "Expected DDL statement");
+      check(r.operation == OperationType::DDL,
+            "Expected DDL operation");
 
-    check(r.tables[0] == "customers",
-          "Expected table 'customers'");
+      check(r.tables.size() == 1,
+            "Expected exactly one table");
+
+      check(r.tables[0] == "customers",
+            "Expected table 'customers'");
 }
 
 void testAlterTable(SqlAnalyzer& analyzer)
 {
-    auto r = analyzer.analyze("ALTER TABLE customers ADD COLUMN email VARCHAR(100)");
+      auto r = analyzer.analyze("ALTER TABLE customers ADD COLUMN email VARCHAR(100)");
+      
+      
+      check(r.type == StatementType::DDL,
+            "Expected DDL statement");
 
-    check(r.type == StatementType::DDL,
-          "Expected DDL statement");
+      check(r.tables.size() == 1,
+            "Expected exactly one table");
 
-    check(r.tables.size() == 1,
-          "Expected exactly one table");
+      check(r.tables[0] == "customers",
+            "Expected table 'customers'");
 
-    check(r.tables[0] == "customers",
-          "Expected table 'customers'");
-
-    finishTest("ALTER TABLE");
+      finishTest("ALTER TABLE");
 }
 
 void testDropTable(SqlAnalyzer& analyzer)
 {
-    auto r = analyzer.analyze("DROP TABLE customers");
+      auto r = analyzer.analyze("DROP TABLE customers");
 
-    check(r.type == StatementType::DDL,
-          "Expected DDL statement");
+      check(r.type == StatementType::DDL,
+            "Expected DDL statement");
 
-    check(r.tables.size() == 1,
-          "Expected exactly one table");
+      check(r.tables.size() == 1,
+            "Expected exactly one table");
 
-    check(r.tables[0] == "customers",
-          "Expected table 'customers'");
+      check(r.tables[0] == "customers",
+            "Expected table 'customers'");
 
-    finishTest("DROP TABLE");
+      finishTest("DROP TABLE");
 }
 
 int main()

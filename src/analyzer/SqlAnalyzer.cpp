@@ -17,7 +17,8 @@ AnalysisResult SqlAnalyzer::analyze(const std::string& sql) {
     AnalysisResult result;
 
     std::string upper = toUpper(sql);
-    result.type = detectType(upper);
+    result.operation = detectOperation(upper);
+    result.type = detectType(result.operation);
 
     switch (result.type) {
         case StatementType::SELECT:
@@ -40,17 +41,33 @@ AnalysisResult SqlAnalyzer::analyze(const std::string& sql) {
 }
 
 // Determine the type of SQL statement
-StatementType SqlAnalyzer::detectType(const std::string& upperQuery) {
+OperationType SqlAnalyzer::detectOperation(const std::string& upperQuery) {
     if (upperQuery.find("SELECT") == 0) {
-        return StatementType::SELECT;
-    } 
-    else if (upperQuery.find("INSERT") == 0 ||
-             upperQuery.find("UPDATE") == 0 ||
-             upperQuery.find("DELETE") == 0) {
-        return StatementType::DML   ;
-    } 
-    else {
-        return StatementType::DDL;
+        return OperationType::SELECT;
+    } else if (upperQuery.find("INSERT") == 0) {
+        return OperationType::INSERT;
+    } else if (upperQuery.find("UPDATE") == 0) {
+        return OperationType::UPDATE;
+    } else if (upperQuery.find("DELETE") == 0) {
+        return OperationType::DELETE;
+    } else if (upperQuery.find("CREATE") == 0 || upperQuery.find("ALTER") == 0 || upperQuery.find("DROP") == 0) {
+        return OperationType::DDL;
+    } else {
+        return OperationType::UNKNOWN;
+    }
+}
+StatementType SqlAnalyzer::detectType(OperationType upperQuery) {
+    switch (upperQuery) {
+        case OperationType::SELECT:
+            return StatementType::SELECT;
+        case OperationType::INSERT:
+        case OperationType::UPDATE:
+        case OperationType::DELETE:
+            return StatementType::DML;
+        case OperationType::DDL:
+            return StatementType::DDL;
+        default:
+            return StatementType::UNKNOWN;
     }
 }
 
