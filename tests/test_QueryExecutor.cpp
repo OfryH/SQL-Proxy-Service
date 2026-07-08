@@ -3,23 +3,23 @@
 
 int main()
 {
-    std::cout << "START TEST" << std::endl;
     QueryExecutor executor;
 
     bool connected = executor.connect(
-        "localhost",
-        "root",
-        "11880055",
-        "sql_proxy_demo"
-    );
+            "localhost",
+            3306,
+            "proxy_user",
+            "password",
+            "sql_proxy_demo"
+        );
 
     if (connected)
     {
-        std::cout << "Connection successful" << std::endl;
+        std::cout << "TEST PASSED! SUCCESSFULLY CONNECTED\n";
     }
     else
     {
-        std::cout << "Connection failed" << std::endl;
+        std::cout << "TEST FAILED :( CONNECTION FAILED\n";
     }
 
     return 0;

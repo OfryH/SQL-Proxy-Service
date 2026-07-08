@@ -5,21 +5,11 @@ set(CMAKE_CXX_STANDARD 17)
 
 include_directories(
     src
-    "C:/Program Files/mysql-connector-c++-9.7.0-winx64/include"
-)
-
-link_directories(
-    "C:/Program Files/mysql-connector-c++-9.7.0-winx64/lib64/vs14"
 )
 
 add_executable(analyzer_tests
     tests/test_analyzer.cpp
     src/analyzer/SqlAnalyzer.cpp
-)
-
-add_executable(executor_tests
-    tests/test_QueryExecutor.cpp
-    src/executor/QueryExecutor.cpp
 )
 
 add_executable(pii_tests
@@ -42,4 +32,19 @@ add_executable(policy_tests
     src/policy/PolicyEngine.cpp
 )
 
-target_link_libraries(executor_tests mysqlcppconn)
+add_executable(executor_tests
+    tests/test_QueryExecutor.cpp
+    src/executor/QueryExecutor.cpp
+)
+
+target_include_directories(executor_tests PRIVATE
+    "C:/Program Files/MySQL/MySQL Server 8.0/include"
+)
+
+target_link_directories(executor_tests PRIVATE
+    "C:/Program Files/MySQL/MySQL Server 8.0/lib"
+)
+
+target_link_libraries(executor_tests
+    libmysql
+)
