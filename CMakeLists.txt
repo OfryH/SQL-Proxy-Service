@@ -37,4 +37,9 @@ add_executable(audit_tests
     src/audit/AuditLogger.cpp
 )
 
+add_executable(policy_tests
+    tests/test_PolicyEngine.cpp
+    src/policy/PolicyEngine.cpp
+)
+
 target_link_libraries(executor_tests mysqlcppconn)
