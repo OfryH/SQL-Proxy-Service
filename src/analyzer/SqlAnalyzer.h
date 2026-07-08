@@ -7,7 +7,7 @@ enum class OperationType
     SELECT,
     INSERT,
     UPDATE,
-    DELETE,
+    DELETE_OP,
     DDL,
     UNKNOWN
 };

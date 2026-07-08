@@ -102,7 +102,7 @@ void testDelete(SqlAnalyzer& analyzer)
 {
     auto r = analyzer.analyze("DELETE FROM customers");
 
-    check(r.operation == OperationType::DELETE,
+    check(r.operation == OperationType::DELETE_OP,
           "Expected DELETE operation");
 
     check(r.type == StatementType::DML,
@@ -219,7 +219,7 @@ void testDeleteColumns(SqlAnalyzer& analyzer)
       check(r.type == StatementType::DML,
             "Expected DML statement");
 
-      check(r.operation == OperationType::DELETE,
+      check(r.operation == OperationType::DELETE_OP,
             "Expected DELETE operation");     
 
       check(r.columns.size() == 0,

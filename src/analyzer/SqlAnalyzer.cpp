@@ -49,7 +49,7 @@ OperationType SqlAnalyzer::detectOperation(const std::string& upperQuery) {
     } else if (upperQuery.find("UPDATE") == 0) {
         return OperationType::UPDATE;
     } else if (upperQuery.find("DELETE") == 0) {
-        return OperationType::DELETE;
+        return OperationType::DELETE_OP;
     } else if (upperQuery.find("CREATE") == 0 || upperQuery.find("ALTER") == 0 || upperQuery.find("DROP") == 0) {
         return OperationType::DDL;
     } else {
@@ -62,7 +62,7 @@ StatementType SqlAnalyzer::detectType(OperationType upperQuery) {
             return StatementType::SELECT;
         case OperationType::INSERT:
         case OperationType::UPDATE:
-        case OperationType::DELETE:
+        case OperationType::DELETE_OP:
             return StatementType::DML;
         case OperationType::DDL:
             return StatementType::DDL;

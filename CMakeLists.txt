@@ -35,7 +35,40 @@ add_executable(policy_tests
 add_executable(executor_tests
     tests/test_QueryExecutor.cpp
     src/executor/QueryExecutor.cpp
+    src/config/DatabaseConfig.cpp
 )
+
+add_executable(sql_proxy
+    src/main.cpp
+    src/proxy/SqlProxyService.cpp
+    src/executor/QueryExecutor.cpp
+    src/analyzer/SqlAnalyzer.cpp
+    src/classifier/PiiClassifier.cpp
+    src/masking/DataMasker.cpp
+    src/audit/AuditLogger.cpp
+    src/policy/PolicyEngine.cpp
+)
+add_executable(proxy_tests
+    tests/test_SqlProxyService.cpp
+    src/proxy/SqlProxyService.cpp
+    src/executor/QueryExecutor.cpp
+    src/analyzer/SqlAnalyzer.cpp
+    src/classifier/PiiClassifier.cpp
+    src/masking/DataMasker.cpp
+    src/audit/AuditLogger.cpp
+    src/policy/PolicyEngine.cpp
+    src/config/DatabaseConfig.cpp
+)
+
+target_include_directories(proxy_tests PRIVATE
+    "C:/Program Files/MySQL/MySQL Server 8.0/include"
+)
+
+target_link_directories(proxy_tests PRIVATE
+    "C:/Program Files/MySQL/MySQL Server 8.0/lib"
+)
+
+target_link_libraries(proxy_tests libmysql)
 
 target_include_directories(executor_tests PRIVATE
     "C:/Program Files/MySQL/MySQL Server 8.0/include"
@@ -46,5 +79,17 @@ target_link_directories(executor_tests PRIVATE
 )
 
 target_link_libraries(executor_tests
+    libmysql
+)
+
+target_include_directories(sql_proxy PRIVATE
+    "C:/Program Files/MySQL/MySQL Server 8.0/include"
+)
+
+target_link_directories(sql_proxy PRIVATE
+    "C:/Program Files/MySQL/MySQL Server 8.0/lib"
+)
+
+target_link_libraries(sql_proxy
     libmysql
 )

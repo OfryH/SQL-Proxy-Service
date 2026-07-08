@@ -71,7 +71,7 @@ bool PolicyEngine::isAllowed(OperationType operation)
         case OperationType::UPDATE:
             return allowUpdate;
 
-        case OperationType::DELETE:
+        case OperationType::DELETE_OP:
             return allowDelete;
 
         case OperationType::DDL:

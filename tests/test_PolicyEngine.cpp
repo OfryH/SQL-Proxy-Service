@@ -87,7 +87,7 @@ void testDeniedOperations()
     check(!policy.isAllowed(OperationType::UPDATE),
           "UPDATE should be denied");
 
-    check(!policy.isAllowed(OperationType::DELETE),
+    check(!policy.isAllowed(OperationType::DELETE_OP),
           "DELETE should be denied");
 
     check(!policy.isAllowed(OperationType::DDL),
