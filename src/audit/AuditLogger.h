@@ -2,6 +2,7 @@
 
 #include <string>
 #include <vector>
+#include <map>
 
 struct AuditEntry
 {
@@ -14,7 +15,7 @@ struct AuditEntry
     std::vector<std::string> tables;
     std::vector<std::string> columns;
 
-    std::vector<std::string> piiColumns;
+    std::map<std::string, std::string> piiColumns;
 
     std::string status;
     std::string errorMessage;
@@ -32,7 +33,6 @@ public:
 private:
     std::string logFile_;
 
-    std::string vectorToString(
-        const std::vector<std::string>& values
-    );
+    std::string vectorToString(const std::vector<std::string>& values);
+    std::string mapToString(const std::map<std::string, std::string>& values);
 };

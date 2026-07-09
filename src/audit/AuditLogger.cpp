@@ -51,7 +51,7 @@ void AuditLogger::log(const AuditEntry& entry)
         << "\n";
 
     out << "PII Columns: "
-        << vectorToString(entry.piiColumns)
+        << mapToString(entry.piiColumns)
         << "\n";
 
     out << "Rows returned/affected: "
@@ -81,6 +81,25 @@ std::string AuditLogger::vectorToString(
         {
             result += ", ";
         }
+    }
+
+    return result;
+}
+
+std::string AuditLogger::mapToString(
+    const std::map<std::string, std::string>& values)
+{
+    std::string result;
+
+    for (const auto& [column, type] : values)
+    {
+        result += column + "(" + type + "), ";
+    }
+
+    if (!result.empty())
+    {
+        result.pop_back();
+        result.pop_back();
     }
 
     return result;

@@ -24,4 +24,6 @@ private:
     DataMasker masker_;
     AuditLogger logger_;
     AuditEntry createAuditEntry(const AnalysisResult& analysis);
+    std::string piiTypeToString(PiiType type);
+    std::string mapToString(const std::map<std::string, std::string>& values);
 };

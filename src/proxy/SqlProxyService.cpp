@@ -114,7 +114,7 @@ QueryResult SqlProxyService::execute(const std::string& sql)
 
     if (!result.success)
     {
-        AuditEntry entry = createAuditEntry(sql, analysis);
+        AuditEntry entry = createAuditEntry(analysis);
         entry.status = "EXECUTION_FAILED";
         entry.errorMessage = result.errorMessage;
        
@@ -135,7 +135,7 @@ QueryResult SqlProxyService::execute(const std::string& sql)
     }
 
     // Audit success
-    AuditEntry entry = createAuditEntry(sql, analysis);
+    AuditEntry entry = createAuditEntry(analysis);
 
     entry.status = "SUCCESS";
     
@@ -149,12 +149,19 @@ QueryResult SqlProxyService::execute(const std::string& sql)
         entry.columns = analysis.columns;
     }
 
+    std::vector<std::string> columnsToClassify;
+    // For select queries PII return in the result, for DML/DDL the PII is in the request
+    if (analysis.operation == OperationType::SELECT){
+        columnsToClassify = result.columnNames;
+    } else {
+        columnsToClassify = analysis.columns;
+    }
 
-    for (const auto& c : classifier_.classify(result.columnNames))
+    for (const auto& c : classifier_.classify(columnsToClassify))
     {
         if (c.type != PiiType::NONE)
         {
-            entry.piiColumns.push_back(c.columnName);
+            entry.piiColumns[c.columnName] = piiTypeToString(c.type);
         }
     }
 
@@ -212,4 +219,22 @@ std::string SqlProxyService::operationTypeToString(OperationType operation)
     }
 
     return "UNKNOWN";
+}
+
+std::string SqlProxyService::piiTypeToString(PiiType type)
+{
+    switch(type)
+    {
+        case PiiType::EMAIL:
+            return "EMAIL";
+
+        case PiiType::PHONE:
+            return "PHONE";
+
+        case PiiType::CREDIT_CARD:
+            return "CREDIT_CARD";
+
+        default:
+            return "UNKNOWN";
+    }
 }

@@ -74,6 +74,7 @@ QueryResult QueryExecutor::execute(const std::string& sql)
         return result;
     }
 
+    result.rowsAffected = mysql_affected_rows(connection_);
     MYSQL_RES* res = mysql_store_result(connection_);
 
     // Query that does not return rows (INSERT/UPDATE/DELETE/DDL)
@@ -111,10 +112,7 @@ QueryResult QueryExecutor::execute(const std::string& sql)
     }
 
     mysql_free_result(res);
-    result.rowsAffected = mysql_affected_rows(connection_);
-    std::cout << "Affected rows: "
-          << result.rowsAffected
-          << std::endl;
+
 
     result.success = true;
 

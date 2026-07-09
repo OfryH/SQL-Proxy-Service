@@ -44,21 +44,31 @@ int main()
             continue;
         }
 
-        for (const auto& column : result.columnNames)
+        if (!result.rows.empty())
         {
-            std::cout << column << "\t";
-        }
-
-        std::cout << "\n";
-
-        for (const auto& row : result.rows)
-        {
-            for (const auto& value : row)
+            for (const auto& column : result.columnNames)
             {
-                std::cout << value << "\t";
+                std::cout << column << "\t";
             }
 
             std::cout << "\n";
+
+            for (const auto& row : result.rows)
+            {
+                for (const auto& value : row)
+                {
+                    std::cout << value << "\t";
+                }
+
+                std::cout << "\n";
+            }
+        }
+        else
+        {
+            std::cout << "Query executed successfully. "
+                    << "Rows affected: "
+                    << result.rowsAffected
+                    << "\n";
         }
 
         std::cout << "\n";
