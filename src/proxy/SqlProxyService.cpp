@@ -4,6 +4,7 @@
 #include <chrono>
 #include <iomanip>
 #include <sstream>
+#include <thread>
 
 std::string currentTimestamp()
 {
@@ -34,20 +35,34 @@ SqlProxyService::SqlProxyService(const DatabaseConfig &config)
 
     Logger::info("Connecting to database host: " + config.host);
 
-    bool connected = executor_.connect(
-        config.host,
-        config.port,
-        config.user,
-        config.password,
-        config.database);
+    bool connected = false;
 
-    if (connected)
+    for (int attempt = 1; attempt <= 10; attempt++)
     {
-        Logger::info("Database connection successful");
+        Logger::info("Database connection attempt: " + std::to_string(attempt));
+
+        connected = executor_.connect(
+            config.host,
+            config.port,
+            config.user,
+            config.password,
+            config.database);
+
+        if (connected)
+        {
+            Logger::info("Database connection successful");
+            break;
+        }
+
+        Logger::warning("Database connection failed, retrying...");
+
+        std::this_thread::sleep_for(
+            std::chrono::seconds(2));
     }
-    else
+
+    if (!connected)
     {
-        Logger::error("Database connection failed");
+        Logger::error("Could not connect to database after retries");
     }
 }
 

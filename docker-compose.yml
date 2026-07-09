@@ -12,7 +12,7 @@ services:
     volumes:
       - ./sql:/docker-entrypoint-initdb.d
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "proxy_user", "-ppassword"]
       interval: 5s
       timeout: 5s
       retries: 10
