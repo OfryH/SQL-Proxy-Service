@@ -21,9 +21,8 @@ class PiiClassifier
 {
 public:
     std::vector<ColumnClassification> classify(
-        const std::vector<std::string>& columns
-    );
+        const std::vector<std::string> &columns);
 
 private:
-    PiiType classifyColumn(const std::string& column);
+    PiiType classifyColumn(const std::string &column);
 };

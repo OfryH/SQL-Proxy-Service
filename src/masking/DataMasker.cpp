@@ -1,24 +1,22 @@
 #include "DataMasker.h"
 
-
 std::vector<std::vector<std::string>> DataMasker::mask(
-    const QueryResult& result,
-    const std::vector<ColumnClassification>& classifications)
+    const QueryResult &result,
+    const std::vector<ColumnClassification> &classifications)
 {
     std::vector<std::vector<std::string>> maskedRows = result.rows;
 
-    for (auto& row : maskedRows)
+    for (auto &row : maskedRows)
     {
         for (size_t i = 0; i < row.size(); i++)
         {
-            
+
             if (i < classifications.size())
-                {
-                    row[i] = maskValue(
-                        row[i],
-                        classifications[i].type
-                    );
-                }       
+            {
+                row[i] = maskValue(
+                    row[i],
+                    classifications[i].type);
+            }
         }
     }
 
@@ -27,28 +25,27 @@ std::vector<std::vector<std::string>> DataMasker::mask(
 
 // Masking value depending on the PII type
 std::string DataMasker::maskValue(
-    const std::string& value,
+    const std::string &value,
     PiiType type)
 {
     switch (type)
     {
-        case PiiType::EMAIL:
-            return maskEmail(value);
+    case PiiType::EMAIL:
+        return maskEmail(value);
 
-        case PiiType::PHONE:
-            return maskPhone(value);
+    case PiiType::PHONE:
+        return maskPhone(value);
 
-        case PiiType::CREDIT_CARD:
-            return maskCreditCard(value);
+    case PiiType::CREDIT_CARD:
+        return maskCreditCard(value);
 
-        case PiiType::NONE:
-        default:
-            return value;
+    case PiiType::NONE:
+    default:
+        return value;
     }
 }
 
-
-std::string DataMasker::maskEmail(const std::string& email)
+std::string DataMasker::maskEmail(const std::string &email)
 {
     auto atPos = email.find('@');
     if (atPos == std::string::npos || atPos == 0)
@@ -59,8 +56,7 @@ std::string DataMasker::maskEmail(const std::string& email)
     return std::string(atPos, '*') + email.substr(atPos);
 }
 
-
-std::string DataMasker::maskPhone(const std::string& phone)
+std::string DataMasker::maskPhone(const std::string &phone)
 {
     if (phone.length() <= 2)
     {
@@ -71,8 +67,7 @@ std::string DataMasker::maskPhone(const std::string& phone)
            std::string(phone.length() - 2, '*');
 }
 
-
-std::string DataMasker::maskCreditCard(const std::string& card)
+std::string DataMasker::maskCreditCard(const std::string &card)
 {
     if (card.length() <= 4)
     {

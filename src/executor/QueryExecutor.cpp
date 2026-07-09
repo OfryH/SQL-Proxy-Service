@@ -3,12 +3,10 @@
 #include <iostream>
 #include "../logger/Logger.h"
 
-
 QueryExecutor::QueryExecutor()
 {
     connection_ = nullptr;
 }
-
 
 QueryExecutor::~QueryExecutor()
 {
@@ -17,12 +15,11 @@ QueryExecutor::~QueryExecutor()
 
 // Connecting to the mySql database
 bool QueryExecutor::connect(
-    const std::string& host,
+    const std::string &host,
     int port,
-    const std::string& user,
-    const std::string& password,
-    const std::string& database
-)
+    const std::string &user,
+    const std::string &password,
+    const std::string &database)
 {
     connection_ = mysql_init(nullptr);
 
@@ -56,7 +53,7 @@ bool QueryExecutor::connect(
 }
 
 // Executing the sql query against the database
-QueryResult QueryExecutor::execute(const std::string& sql)
+QueryResult QueryExecutor::execute(const std::string &sql)
 {
     QueryResult result;
     // Checking if the connection is open
@@ -75,7 +72,7 @@ QueryResult QueryExecutor::execute(const std::string& sql)
     }
 
     result.rowsAffected = mysql_affected_rows(connection_);
-    MYSQL_RES* res = mysql_store_result(connection_);
+    MYSQL_RES *res = mysql_store_result(connection_);
 
     // Query that does not return rows (INSERT/UPDATE/DELETE/DDL)
     if (res == nullptr)
@@ -87,7 +84,7 @@ QueryResult QueryExecutor::execute(const std::string& sql)
     // Getting the column names from the result
     int columns = mysql_num_fields(res);
 
-    MYSQL_FIELD* fields = mysql_fetch_fields(res);
+    MYSQL_FIELD *fields = mysql_fetch_fields(res);
 
     for (int i = 0; i < columns; i++)
     {
@@ -104,15 +101,13 @@ QueryResult QueryExecutor::execute(const std::string& sql)
         for (int i = 0; i < columns; i++)
         {
             currentRow.push_back(
-                row[i] ? row[i] : "NULL"
-            );
+                row[i] ? row[i] : "NULL");
         }
 
         result.rows.push_back(currentRow);
     }
 
     mysql_free_result(res);
-
 
     result.success = true;
 

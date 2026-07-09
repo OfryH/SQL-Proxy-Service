@@ -10,17 +10,15 @@ class DataMasker
 {
 public:
     std::vector<std::vector<std::string>> mask(
-        const QueryResult& result,
-        const std::vector<ColumnClassification>& classifications
-    );
+        const QueryResult &result,
+        const std::vector<ColumnClassification> &classifications);
 
 private:
     std::string maskValue(
-        const std::string& value,
-        PiiType type
-    );
+        const std::string &value,
+        PiiType type);
 
-    std::string maskEmail(const std::string& email);
-    std::string maskPhone(const std::string& phone);
-    std::string maskCreditCard(const std::string& card);
+    std::string maskEmail(const std::string &email);
+    std::string maskPhone(const std::string &phone);
+    std::string maskCreditCard(const std::string &card);
 };

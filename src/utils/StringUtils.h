@@ -2,7 +2,7 @@
 
 #include <string>
 
-inline void trim(std::string& s)
+inline void trim(std::string &s)
 {
     while (!s.empty() &&
            (s.back() == '\r' ||

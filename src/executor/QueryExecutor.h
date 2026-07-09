@@ -11,17 +11,16 @@ public:
     ~QueryExecutor();
 
     bool connect(
-        const std::string& host,
+        const std::string &host,
         int port,
-        const std::string& user,
-        const std::string& password,
-        const std::string& database
-    );
+        const std::string &user,
+        const std::string &password,
+        const std::string &database);
 
     void disconnect();
 
-    QueryResult execute(const std::string& sql);
+    QueryResult execute(const std::string &sql);
 
 private:
-    MYSQL* connection_;
+    MYSQL *connection_;
 };

@@ -4,24 +4,24 @@
 #include <chrono>
 #include <iomanip>
 
-void Logger::info(const std::string& message)
+void Logger::info(const std::string &message)
 {
     log(LogLevel::INFO, message);
 }
 
-void Logger::warning(const std::string& message)
+void Logger::warning(const std::string &message)
 {
     log(LogLevel::WARNING, message);
 }
 
-void Logger::error(const std::string& message)
+void Logger::error(const std::string &message)
 {
     log(LogLevel::ERROR, message);
 }
 
 void Logger::log(
     LogLevel level,
-    const std::string& message)
+    const std::string &message)
 {
     auto now = std::chrono::system_clock::now();
     auto time = std::chrono::system_clock::to_time_t(now);

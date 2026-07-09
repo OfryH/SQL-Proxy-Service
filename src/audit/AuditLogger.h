@@ -26,13 +26,13 @@ struct AuditEntry
 class AuditLogger
 {
 public:
-    explicit AuditLogger(const std::string& logFile);
+    explicit AuditLogger(const std::string &logFile);
 
-    void log(const AuditEntry& entry);
+    void log(const AuditEntry &entry);
 
 private:
     std::string logFile_;
 
-    std::string vectorToString(const std::vector<std::string>& values);
-    std::string mapToString(const std::map<std::string, std::string>& values);
+    std::string vectorToString(const std::vector<std::string> &values);
+    std::string mapToString(const std::map<std::string, std::string> &values);
 };

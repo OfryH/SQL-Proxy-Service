@@ -5,7 +5,6 @@
 #include "../logger/Logger.h"
 #include "../utils/StringUtils.h"
 
-
 PolicyEngine::PolicyEngine()
     : allowSelect(false),
       allowInsert(false),
@@ -16,9 +15,9 @@ PolicyEngine::PolicyEngine()
 }
 
 // Responsible for loading the policy file and defining the policy by it
-bool PolicyEngine::loadPolicy(const std::string& path)
+bool PolicyEngine::loadPolicy(const std::string &path)
 {
-    
+
     std::ifstream file(path);
 
     if (!file.is_open())
@@ -35,14 +34,13 @@ bool PolicyEngine::loadPolicy(const std::string& path)
 
         std::string key;
         std::string value;
-        
 
         if (std::getline(ss, key, '=') &&
             std::getline(ss, value))
         {
             trim(key);
             trim(value);
-            
+
             bool enabled = (value == "true" || value == "1");
 
             if (key == "ALLOW_SELECT")
@@ -61,31 +59,30 @@ bool PolicyEngine::loadPolicy(const std::string& path)
                 allowDDL = enabled;
         }
     }
-        
+
     return true;
 }
-
 
 bool PolicyEngine::isAllowed(OperationType operation)
 {
     switch (operation)
     {
-        case OperationType::SELECT:
-            return allowSelect;
+    case OperationType::SELECT:
+        return allowSelect;
 
-        case OperationType::INSERT:
-            return allowInsert;
+    case OperationType::INSERT:
+        return allowInsert;
 
-        case OperationType::UPDATE:
-            return allowUpdate;
+    case OperationType::UPDATE:
+        return allowUpdate;
 
-        case OperationType::DELETE_OP:
-            return allowDelete;
+    case OperationType::DELETE_OP:
+        return allowDelete;
 
-        case OperationType::DDL:
-            return allowDDL;
+    case OperationType::DDL:
+        return allowDDL;
 
-        default:
-            return false;
+    default:
+        return false;
     }
 }

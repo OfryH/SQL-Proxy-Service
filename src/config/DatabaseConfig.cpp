@@ -4,7 +4,7 @@
 #include "../logger/Logger.h"
 #include "../utils/StringUtils.h"
 
-bool DatabaseConfig::load(const std::string& path)
+bool DatabaseConfig::load(const std::string &path)
 {
 
     std::ifstream file(path);
@@ -12,7 +12,7 @@ bool DatabaseConfig::load(const std::string& path)
 
     if (!file.is_open())
     {
-        Logger::error("Failed to open config file: " + path );
+        Logger::error("Failed to open config file: " + path);
         return false;
     }
     Logger::info("database file was opened successfully");
@@ -48,11 +48,8 @@ bool DatabaseConfig::load(const std::string& path)
             logFile = value;
 
         else if (key == "POLICY_FILE")
-            policyFile = value;  
+            policyFile = value;
     }
 
-    
     return true;
 }
-
-

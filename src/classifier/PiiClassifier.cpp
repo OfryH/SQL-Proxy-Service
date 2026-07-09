@@ -3,23 +3,21 @@
 
 // Returns a vector for the columns with the PII classification
 std::vector<ColumnClassification> PiiClassifier::classify(
-    const std::vector<std::string>& columns)
+    const std::vector<std::string> &columns)
 {
     std::vector<ColumnClassification> result;
 
-    for (const auto& column : columns)
+    for (const auto &column : columns)
     {
-        result.push_back({
-            column,
-            classifyColumn(column)
-        });
+        result.push_back({column,
+                          classifyColumn(column)});
     }
 
     return result;
 }
 
 // Checking if a column is PII or not
-PiiType PiiClassifier::classifyColumn(const std::string& column)
+PiiType PiiClassifier::classifyColumn(const std::string &column)
 {
     std::string lower = column;
 
@@ -27,8 +25,7 @@ PiiType PiiClassifier::classifyColumn(const std::string& column)
         lower.begin(),
         lower.end(),
         lower.begin(),
-        ::tolower
-    );
+        ::tolower);
 
     if (lower == "email")
     {

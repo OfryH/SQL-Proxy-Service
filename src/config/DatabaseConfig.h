@@ -13,5 +13,5 @@ struct DatabaseConfig
     std::string policyFile;
     std::string logFile;
 
-    bool load(const std::string& path);
+    bool load(const std::string &path);
 };

@@ -5,7 +5,6 @@
 #include "proxy/SqlProxyService.h"
 #include "logger/Logger.h"
 
-
 int main()
 {
     DatabaseConfig config;
@@ -15,7 +14,7 @@ int main()
         Logger::error("Failed loading database configuration");
         return 1;
     }
-    
+
     SqlProxyService proxy(config);
 
     Logger::info("SQL Proxy Service started");
@@ -46,16 +45,16 @@ int main()
 
         if (!result.rows.empty())
         {
-            for (const auto& column : result.columnNames)
+            for (const auto &column : result.columnNames)
             {
                 std::cout << column << "\t";
             }
 
             std::cout << "\n";
 
-            for (const auto& row : result.rows)
+            for (const auto &row : result.rows)
             {
-                for (const auto& value : row)
+                for (const auto &value : row)
                 {
                     std::cout << value << "\t";
                 }
@@ -66,9 +65,9 @@ int main()
         else
         {
             std::cout << "Query executed successfully. "
-                    << "Rows affected: "
-                    << result.rowsAffected
-                    << "\n";
+                      << "Rows affected: "
+                      << result.rowsAffected
+                      << "\n";
         }
 
         std::cout << "\n";

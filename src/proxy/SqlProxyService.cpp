@@ -5,7 +5,6 @@
 #include <iomanip>
 #include <sstream>
 
-
 std::string currentTimestamp()
 {
     auto now = std::chrono::system_clock::now();
@@ -15,13 +14,12 @@ std::string currentTimestamp()
 
     ss << std::put_time(
         std::localtime(&time),
-        "%Y-%m-%d %H:%M:%S"
-    );
+        "%Y-%m-%d %H:%M:%S");
 
     return ss.str();
 }
 
-SqlProxyService::SqlProxyService(const DatabaseConfig& config)
+SqlProxyService::SqlProxyService(const DatabaseConfig &config)
     : logger_(config.logFile)
 {
     // Loading the policy
@@ -41,8 +39,7 @@ SqlProxyService::SqlProxyService(const DatabaseConfig& config)
         config.port,
         config.user,
         config.password,
-        config.database
-    );
+        config.database);
 
     if (connected)
     {
@@ -55,7 +52,7 @@ SqlProxyService::SqlProxyService(const DatabaseConfig& config)
 }
 
 // Fill the audit entry fields
-AuditEntry SqlProxyService::createAuditEntry(const AnalysisResult& analysis)
+AuditEntry SqlProxyService::createAuditEntry(const AnalysisResult &analysis)
 {
     AuditEntry entry;
 
@@ -75,7 +72,7 @@ AuditEntry SqlProxyService::createAuditEntry(const AnalysisResult& analysis)
 }
 
 // Executing the proxy service
-QueryResult SqlProxyService::execute(const std::string& sql)
+QueryResult SqlProxyService::execute(const std::string &sql)
 {
     QueryResult result;
 
@@ -117,7 +114,7 @@ QueryResult SqlProxyService::execute(const std::string& sql)
         AuditEntry entry = createAuditEntry(analysis);
         entry.status = "EXECUTION_FAILED";
         entry.errorMessage = result.errorMessage;
-       
+
         logger_.log(entry);
 
         return result;
@@ -138,7 +135,7 @@ QueryResult SqlProxyService::execute(const std::string& sql)
     AuditEntry entry = createAuditEntry(analysis);
 
     entry.status = "SUCCESS";
-    
+
     if (analysis.columns.size() == 1 &&
         analysis.columns[0] == "*")
     {
@@ -151,13 +148,16 @@ QueryResult SqlProxyService::execute(const std::string& sql)
 
     std::vector<std::string> columnsToClassify;
     // For select queries PII return in the result, for DML/DDL the PII is in the request
-    if (analysis.operation == OperationType::SELECT){
+    if (analysis.operation == OperationType::SELECT)
+    {
         columnsToClassify = result.columnNames;
-    } else {
+    }
+    else
+    {
         columnsToClassify = analysis.columns;
     }
 
-    for (const auto& c : classifier_.classify(columnsToClassify))
+    for (const auto &c : classifier_.classify(columnsToClassify))
     {
         if (c.type != PiiType::NONE)
         {
@@ -175,47 +175,44 @@ QueryResult SqlProxyService::execute(const std::string& sql)
     }
     logger_.log(entry);
 
-
     return result;
-
 }
 
 std::string SqlProxyService::statementTypeToString(StatementType type)
 {
-    switch(type)
+    switch (type)
     {
-        case StatementType::SELECT:
-            return "SELECT";
+    case StatementType::SELECT:
+        return "SELECT";
 
-        case StatementType::DML:
-            return "DML";
+    case StatementType::DML:
+        return "DML";
 
-        case StatementType::DDL:
-            return "DDL";
+    case StatementType::DDL:
+        return "DDL";
     }
 
     return "UNKNOWN";
 }
 
-
 std::string SqlProxyService::operationTypeToString(OperationType operation)
 {
-    switch(operation)
+    switch (operation)
     {
-        case OperationType::SELECT:
-            return "SELECT";
+    case OperationType::SELECT:
+        return "SELECT";
 
-        case OperationType::INSERT:
-            return "INSERT";
+    case OperationType::INSERT:
+        return "INSERT";
 
-        case OperationType::UPDATE:
-            return "UPDATE";
+    case OperationType::UPDATE:
+        return "UPDATE";
 
-        case OperationType::DELETE_OP:
-            return "DELETE";
+    case OperationType::DELETE_OP:
+        return "DELETE";
 
-        case OperationType::DDL:
-            return "DDL";
+    case OperationType::DDL:
+        return "DDL";
     }
 
     return "UNKNOWN";
@@ -223,18 +220,18 @@ std::string SqlProxyService::operationTypeToString(OperationType operation)
 
 std::string SqlProxyService::piiTypeToString(PiiType type)
 {
-    switch(type)
+    switch (type)
     {
-        case PiiType::EMAIL:
-            return "EMAIL";
+    case PiiType::EMAIL:
+        return "EMAIL";
 
-        case PiiType::PHONE:
-            return "PHONE";
+    case PiiType::PHONE:
+        return "PHONE";
 
-        case PiiType::CREDIT_CARD:
-            return "CREDIT_CARD";
+    case PiiType::CREDIT_CARD:
+        return "CREDIT_CARD";
 
-        default:
-            return "UNKNOWN";
+    default:
+        return "UNKNOWN";
     }
 }

@@ -11,8 +11,8 @@
 class SqlProxyService
 {
 public:
-    SqlProxyService(const DatabaseConfig& config);
-    QueryResult execute(const std::string& sql);
+    SqlProxyService(const DatabaseConfig &config);
+    QueryResult execute(const std::string &sql);
 
 private:
     std::string statementTypeToString(StatementType type);
@@ -23,7 +23,7 @@ private:
     PiiClassifier classifier_;
     DataMasker masker_;
     AuditLogger logger_;
-    AuditEntry createAuditEntry(const AnalysisResult& analysis);
+    AuditEntry createAuditEntry(const AnalysisResult &analysis);
     std::string piiTypeToString(PiiType type);
-    std::string mapToString(const std::map<std::string, std::string>& values);
+    std::string mapToString(const std::map<std::string, std::string> &values);
 };

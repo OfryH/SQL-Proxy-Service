@@ -3,18 +3,19 @@
 #include <sstream>
 
 // Changing the string to uppercase letters
-std::string SqlAnalyzer::toUpper(const std::string& s) {
+std::string SqlAnalyzer::toUpper(const std::string &s)
+{
     std::string res = s;
     std::transform(
-    res.begin(),
-    res.end(),
-    res.begin(),
-    [](unsigned char c){ return std::toupper(c); }
-);
+        res.begin(),
+        res.end(),
+        res.begin(),
+        [](unsigned char c)
+        { return std::toupper(c); });
     return res;
 }
 
-std::string trim(const std::string& str)
+std::string trim(const std::string &str)
 {
     size_t first = str.find_first_not_of(" \t\n\r");
 
@@ -27,7 +28,8 @@ std::string trim(const std::string& str)
 }
 
 // Analyzing the sql request
-AnalysisResult SqlAnalyzer::analyze(const std::string& sql) {
+AnalysisResult SqlAnalyzer::analyze(const std::string &sql)
+{
     AnalysisResult result;
 
     std::string normalizedSql = trim(sql);
@@ -36,24 +38,25 @@ AnalysisResult SqlAnalyzer::analyze(const std::string& sql) {
     result.operation = detectOperation(upper);
     result.type = detectType(result.operation);
 
-    switch (result.type) {
-        case StatementType::SELECT:
-            result.tables = extractTablesSelect(normalizedSql);
-            result.columns = extractColumnsSelect(normalizedSql);
-            break;
+    switch (result.type)
+    {
+    case StatementType::SELECT:
+        result.tables = extractTablesSelect(normalizedSql);
+        result.columns = extractColumnsSelect(normalizedSql);
+        break;
 
-        case StatementType::DML:
-            result.tables = extractTablesDml(normalizedSql);
-            result.columns = extractColumnsDml(normalizedSql);
-            break;
+    case StatementType::DML:
+        result.tables = extractTablesDml(normalizedSql);
+        result.columns = extractColumnsDml(normalizedSql);
+        break;
 
-        case StatementType::DDL:
-            result.tables = extractTablesDdl(normalizedSql);
-            result.columns = {};
-            break;
+    case StatementType::DDL:
+        result.tables = extractTablesDdl(normalizedSql);
+        result.columns = {};
+        break;
 
-        default:
-            break;
+    default:
+        break;
     }
 
     result.rawQuery = normalizedSql;
@@ -62,39 +65,54 @@ AnalysisResult SqlAnalyzer::analyze(const std::string& sql) {
 }
 
 // Determine the operation of the SQL statement
-OperationType SqlAnalyzer::detectOperation(const std::string& upperQuery) {
-    if (upperQuery.find("SELECT") == 0) {
+OperationType SqlAnalyzer::detectOperation(const std::string &upperQuery)
+{
+    if (upperQuery.find("SELECT") == 0)
+    {
         return OperationType::SELECT;
-    } else if (upperQuery.find("INSERT") == 0) {
+    }
+    else if (upperQuery.find("INSERT") == 0)
+    {
         return OperationType::INSERT;
-    } else if (upperQuery.find("UPDATE") == 0) {
+    }
+    else if (upperQuery.find("UPDATE") == 0)
+    {
         return OperationType::UPDATE;
-    } else if (upperQuery.find("DELETE") == 0) {
+    }
+    else if (upperQuery.find("DELETE") == 0)
+    {
         return OperationType::DELETE_OP;
-    } else if (upperQuery.find("CREATE") == 0 || upperQuery.find("ALTER") == 0 || upperQuery.find("DROP") == 0) {
+    }
+    else if (upperQuery.find("CREATE") == 0 || upperQuery.find("ALTER") == 0 || upperQuery.find("DROP") == 0)
+    {
         return OperationType::DDL;
-    } else {
+    }
+    else
+    {
         return OperationType::UNKNOWN;
     }
 }
 // Determine the type of SQL statement
-StatementType SqlAnalyzer::detectType(OperationType upperQuery) {
-    switch (upperQuery) {
-        case OperationType::SELECT:
-            return StatementType::SELECT;
-        case OperationType::INSERT:
-        case OperationType::UPDATE:
-        case OperationType::DELETE_OP:
-            return StatementType::DML;
-        case OperationType::DDL:
-            return StatementType::DDL;
-        default:
-            return StatementType::UNKNOWN;
+StatementType SqlAnalyzer::detectType(OperationType upperQuery)
+{
+    switch (upperQuery)
+    {
+    case OperationType::SELECT:
+        return StatementType::SELECT;
+    case OperationType::INSERT:
+    case OperationType::UPDATE:
+    case OperationType::DELETE_OP:
+        return StatementType::DML;
+    case OperationType::DDL:
+        return StatementType::DDL;
+    default:
+        return StatementType::UNKNOWN;
     }
 }
 
 // Extracting the tables that were used in the select request
-std::vector<std::string> SqlAnalyzer::extractTablesSelect(const std::string& sql){
+std::vector<std::string> SqlAnalyzer::extractTablesSelect(const std::string &sql)
+{
     std::string upperQuery = toUpper(sql);
 
     std::vector<std::string> tables;
@@ -134,7 +152,8 @@ std::vector<std::string> SqlAnalyzer::extractTablesSelect(const std::string& sql
 }
 
 // Extracting the columns that were used in the select request
-std::vector<std::string> SqlAnalyzer::extractColumnsSelect(const std::string& sql){
+std::vector<std::string> SqlAnalyzer::extractColumnsSelect(const std::string &sql)
+{
     std::string upperQuery = toUpper(sql);
 
     std::vector<std::string> columns;
@@ -172,13 +191,11 @@ std::vector<std::string> SqlAnalyzer::extractColumnsSelect(const std::string& sq
         columns.push_back(cleaned);
     }
 
-
     return columns;
-
 }
 
 // Extracting the tables that were used in the DML request
-std::vector<std::string> SqlAnalyzer::extractTablesDml(const std::string& sql)
+std::vector<std::string> SqlAnalyzer::extractTablesDml(const std::string &sql)
 {
     std::vector<std::string> tables;
 
@@ -229,7 +246,8 @@ std::vector<std::string> SqlAnalyzer::extractTablesDml(const std::string& sql)
 }
 
 // Extracting the columns that were used in the DML request
-std::vector<std::string> SqlAnalyzer::extractColumnsDml(const std::string& sql){
+std::vector<std::string> SqlAnalyzer::extractColumnsDml(const std::string &sql)
+{
     std::vector<std::string> columns;
     std::string upper = toUpper(sql);
 
@@ -237,17 +255,20 @@ std::vector<std::string> SqlAnalyzer::extractColumnsDml(const std::string& sql){
     // Handle request in the format: INSERT INTO table (a,b,c)
     // ======================
     size_t insertPos = upper.find("INSERT");
-    if (insertPos == 0) {
+    if (insertPos == 0)
+    {
         size_t openParen = upper.find('(');
         size_t closeParen = upper.find(')', openParen);
 
-        if (openParen != std::string::npos && closeParen != std::string::npos) {
+        if (openParen != std::string::npos && closeParen != std::string::npos)
+        {
             std::string inside = sql.substr(openParen + 1, closeParen - openParen - 1);
 
             std::istringstream ss(inside);
             std::string col;
 
-            while (std::getline(ss, col, ',')) {
+            while (std::getline(ss, col, ','))
+            {
                 col.erase(0, col.find_first_not_of(" \t"));
                 col.erase(col.find_last_not_of(" \t") + 1);
                 columns.push_back(col);
@@ -261,23 +282,28 @@ std::vector<std::string> SqlAnalyzer::extractColumnsDml(const std::string& sql){
     // Handle request in the format: UPDATE table SET a=1, b=2
     // ======================
     size_t updatePos = upper.find("UPDATE");
-    if (updatePos == 0) {
+    if (updatePos == 0)
+    {
         size_t setPos = upper.find("SET");
-        if (setPos == std::string::npos) return columns;
+        if (setPos == std::string::npos)
+            return columns;
 
         std::string afterSet = sql.substr(setPos + 3);
 
         size_t wherePos = upper.find("WHERE");
-        if (wherePos != std::string::npos) {
+        if (wherePos != std::string::npos)
+        {
             afterSet = sql.substr(setPos + 3, wherePos - (setPos + 3));
         }
 
         std::istringstream ss(afterSet);
         std::string part;
 
-        while (std::getline(ss, part, ',')) {
+        while (std::getline(ss, part, ','))
+        {
             size_t eq = part.find('=');
-            if (eq == std::string::npos) continue;
+            if (eq == std::string::npos)
+                continue;
 
             std::string col = part.substr(0, eq);
 
@@ -294,9 +320,9 @@ std::vector<std::string> SqlAnalyzer::extractColumnsDml(const std::string& sql){
     return columns;
 }
 
-
 // Extracting the tables that were used in the DDL request
-std::vector<std::string> SqlAnalyzer::extractTablesDdl(const std::string& sql) {
+std::vector<std::string> SqlAnalyzer::extractTablesDdl(const std::string &sql)
+{
     std::vector<std::string> tables;
 
     std::string upper = toUpper(sql);
@@ -305,7 +331,8 @@ std::vector<std::string> SqlAnalyzer::extractTablesDdl(const std::string& sql) {
     // CREATE TABLE, ALTER TABLE, and DROP TABLE all contain it.
     size_t tablePos = upper.find("TABLE");
 
-    if (tablePos == std::string::npos) {
+    if (tablePos == std::string::npos)
+    {
         return tables;
     }
 
@@ -320,17 +347,16 @@ std::vector<std::string> SqlAnalyzer::extractTablesDdl(const std::string& sql) {
     // Remove possible trailing characters like '(' or ';' from the table name
     tableName.erase(
         std::remove_if(tableName.begin(), tableName.end(),
-            [](char c) {
-                return c == '(' || c == ';';
-            }),
-        tableName.end()
-    );
+                       [](char c)
+                       {
+                           return c == '(' || c == ';';
+                       }),
+        tableName.end());
 
-    if (!tableName.empty()) {
+    if (!tableName.empty())
+    {
         tables.push_back(tableName);
     }
 
     return tables;
 }
-
-

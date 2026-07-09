@@ -5,12 +5,12 @@
 
 #include <fstream>
 
-AuditLogger::AuditLogger(const std::string& logFile)
+AuditLogger::AuditLogger(const std::string &logFile)
     : logFile_(logFile)
 {
 }
 
-void AuditLogger::log(const AuditEntry& entry)
+void AuditLogger::log(const AuditEntry &entry)
 {
     std::ofstream out(logFile_, std::ios::app);
 
@@ -23,8 +23,8 @@ void AuditLogger::log(const AuditEntry& entry)
     out << "========================================\n";
 
     out << "Timestamp: "
-    << entry.timestamp
-    << "\n";
+        << entry.timestamp
+        << "\n";
 
     out << "Status: "
         << entry.status
@@ -55,8 +55,8 @@ void AuditLogger::log(const AuditEntry& entry)
         << "\n";
 
     out << "Rows returned/affected: "
-    << entry.rowsAffected
-    << "\n";
+        << entry.rowsAffected
+        << "\n";
 
     if (!entry.errorMessage.empty())
     {
@@ -69,7 +69,7 @@ void AuditLogger::log(const AuditEntry& entry)
 }
 
 std::string AuditLogger::vectorToString(
-    const std::vector<std::string>& values)
+    const std::vector<std::string> &values)
 {
     std::string result;
 
@@ -87,11 +87,11 @@ std::string AuditLogger::vectorToString(
 }
 
 std::string AuditLogger::mapToString(
-    const std::map<std::string, std::string>& values)
+    const std::map<std::string, std::string> &values)
 {
     std::string result;
 
-    for (const auto& [column, type] : values)
+    for (const auto &[column, type] : values)
     {
         result += column + "(" + type + "), ";
     }
