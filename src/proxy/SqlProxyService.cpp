@@ -1,19 +1,39 @@
 #include "SqlProxyService.h"
+#include <iostream>
+#include "../logger/Logger.h"
 
 
-// TODO: logging file path should be configurable
-SqlProxyService::SqlProxyService(const std::string& policyPath, const std::string& logPath)
-    : logger_(logPath)
+SqlProxyService::SqlProxyService(const DatabaseConfig& config)
+    : logger_(config.logFile)
 {
-    policy_.loadPolicy(policyPath);
-    // TODO: Load these from config file 
+
+    if (!policy_.loadPolicy(config.policyFile))
+    {
+        Logger::error("Failed loading policy");
+    }
+    else
+    {
+        Logger::info("Policy loaded successfully");
+    }
+
+    Logger::info("Connecting to database host: " + config.host);
+
     bool connected = executor_.connect(
-        "localhost",
-        3306,
-        "proxy_user",
-        "password",
-        "sql_proxy_demo"
+        config.host,
+        config.port,
+        config.user,
+        config.password,
+        config.database
     );
+
+    if (connected)
+    {
+        Logger::info("Database connection successful");
+    }
+    else
+    {
+        Logger::error("Database connection failed");
+    }
 }
 
 QueryResult SqlProxyService::execute(const std::string& sql)

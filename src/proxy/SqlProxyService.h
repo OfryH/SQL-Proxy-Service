@@ -6,11 +6,12 @@
 #include "../classifier/PiiClassifier.h"
 #include "../masking/DataMasker.h"
 #include "../audit/AuditLogger.h"
+#include "../config/DatabaseConfig.h"
 
 class SqlProxyService
 {
 public:
-    SqlProxyService(const std::string& policyPath, const std::string& logPath);
+    SqlProxyService(const DatabaseConfig& config);
     QueryResult execute(const std::string& sql);
 
 private:

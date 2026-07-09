@@ -1,6 +1,7 @@
 #include "AuditLogger.h"
 #include <iostream>
 #include <filesystem>
+#include "../logger/Logger.h"
 
 #include <fstream>
 
@@ -15,7 +16,7 @@ void AuditLogger::log(const AuditEntry& entry)
 
     if (!out.is_open())
     {
-        std::cout << "Failed opening audit file\n";
+        Logger::error("Failed opening audit log file: " + logFile_);
         return;
     }
 

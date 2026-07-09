@@ -2,6 +2,8 @@
 
 #include <fstream>
 #include <sstream>
+#include "../logger/Logger.h"
+#include "../utils/StringUtils.h"
 
 
 PolicyEngine::PolicyEngine()
@@ -16,10 +18,12 @@ PolicyEngine::PolicyEngine()
 
 bool PolicyEngine::loadPolicy(const std::string& path)
 {
+    Logger::info("Loading policy from [" + path + "]");
     std::ifstream file(path);
 
     if (!file.is_open())
     {
+        Logger::error("Policy file can't be opened");
         return false;
     }
 
@@ -31,11 +35,15 @@ bool PolicyEngine::loadPolicy(const std::string& path)
 
         std::string key;
         std::string value;
+        
 
         if (std::getline(ss, key, '=') &&
             std::getline(ss, value))
         {
-            bool enabled = (value == "true");
+            trim(key);
+            trim(value);
+            Logger::info("Key=[" + key + "] Value=[" + value + "]");
+            bool enabled = (value == "true" || value == "1");
 
             if (key == "ALLOW_SELECT")
                 allowSelect = enabled;
@@ -53,7 +61,12 @@ bool PolicyEngine::loadPolicy(const std::string& path)
                 allowDDL = enabled;
         }
     }
-
+    Logger::info("ALLOW_SELECT: " + std::string(allowSelect ? "true" : "false"));
+    Logger::info("ALLOW_INSERT: " + std::string(allowInsert ? "true" : "false"));
+    Logger::info("ALLOW_UPDATE: " + std::string(allowUpdate ? "true" : "false"));
+    Logger::info("ALLOW_DELETE: " + std::string(allowDelete ? "true" : "false"));
+    Logger::info("ALLOW_DDL: " + std::string(allowDDL ? "true" : "false"));
+        
     return true;
 }
 
