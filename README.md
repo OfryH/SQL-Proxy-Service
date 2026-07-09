@@ -155,7 +155,10 @@ The masking rules are applied only to columns classified as PII by the PiiClassi
 
 ## AuditLogger
 
-Creates an audit record for every query.
+Creates an audit record for every query. 
+
+Audit records are stored in: 
+logs/audit.log 
 
 The audit contains:
 
@@ -172,6 +175,7 @@ The audit contains:
 
 ---
 
+The `logs` directory is mounted as a Docker volume, so audit records are available on the host machine under the project directory.
 
 ## Database Setup
 
