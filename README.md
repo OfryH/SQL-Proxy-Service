@@ -48,6 +48,7 @@ The proxy supports:
 - Docker Compose
 
 ---
+Clone the repository and navigate to the project directory
 
 ## Running the service
 
