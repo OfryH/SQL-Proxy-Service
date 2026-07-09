@@ -71,6 +71,32 @@ docker logs -f sql_proxy
 
 The service starts a MySQL container and the SQL proxy container.
 
+
+## Configuration
+
+The service uses configuration files located under:
+
+config/  
+├── database.conf  
+└── policy.conf  
+
+### database.conf
+
+Contains the database connection configuration and runtime paths.
+
+Example:  
+host=mysql  
+port=3306
+user=proxy_user  
+password=password  
+database=sql_proxy_demo  
+LOG_FILE=logs/audit.log  
+POLICY_FILE=config/policy.conf  
+
+### policy.conf
+
+Defines which SQL operations are allowed by the proxy.
+
 # Architecture
 
 The system is divided into several components:
