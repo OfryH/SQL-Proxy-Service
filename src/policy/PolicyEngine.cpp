@@ -15,10 +15,10 @@ PolicyEngine::PolicyEngine()
 {
 }
 
-
+// Responsible for loading the policy file and defining the policy by it
 bool PolicyEngine::loadPolicy(const std::string& path)
 {
-    Logger::info("Loading policy from [" + path + "]");
+    
     std::ifstream file(path);
 
     if (!file.is_open())
@@ -42,7 +42,7 @@ bool PolicyEngine::loadPolicy(const std::string& path)
         {
             trim(key);
             trim(value);
-            Logger::info("Key=[" + key + "] Value=[" + value + "]");
+            
             bool enabled = (value == "true" || value == "1");
 
             if (key == "ALLOW_SELECT")
@@ -61,11 +61,6 @@ bool PolicyEngine::loadPolicy(const std::string& path)
                 allowDDL = enabled;
         }
     }
-    Logger::info("ALLOW_SELECT: " + std::string(allowSelect ? "true" : "false"));
-    Logger::info("ALLOW_INSERT: " + std::string(allowInsert ? "true" : "false"));
-    Logger::info("ALLOW_UPDATE: " + std::string(allowUpdate ? "true" : "false"));
-    Logger::info("ALLOW_DELETE: " + std::string(allowDelete ? "true" : "false"));
-    Logger::info("ALLOW_DDL: " + std::string(allowDDL ? "true" : "false"));
         
     return true;
 }

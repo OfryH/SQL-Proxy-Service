@@ -25,7 +25,7 @@ std::vector<std::vector<std::string>> DataMasker::mask(
     return maskedRows;
 }
 
-
+// Masking value depending on the PII type
 std::string DataMasker::maskValue(
     const std::string& value,
     PiiType type)

@@ -10,4 +10,5 @@ struct QueryResult
 
     std::vector<std::string> columnNames;
     std::vector<std::vector<std::string>> rows;
+    int rowsAffected = 0;
 };

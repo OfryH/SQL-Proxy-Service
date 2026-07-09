@@ -23,4 +23,5 @@ private:
     PiiClassifier classifier_;
     DataMasker masker_;
     AuditLogger logger_;
+    AuditEntry createAuditEntry(const AnalysisResult& analysis);
 };

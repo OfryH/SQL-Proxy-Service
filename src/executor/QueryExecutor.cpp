@@ -1,6 +1,7 @@
 #include "QueryExecutor.h"
 
 #include <iostream>
+#include "../logger/Logger.h"
 
 
 QueryExecutor::QueryExecutor()
@@ -14,7 +15,7 @@ QueryExecutor::~QueryExecutor()
     disconnect();
 }
 
-
+// Connecting to the mySql database
 bool QueryExecutor::connect(
     const std::string& host,
     int port,
@@ -27,7 +28,7 @@ bool QueryExecutor::connect(
 
     if (connection_ == nullptr)
     {
-        std::cerr << "mysql_init failed\n";
+        Logger::error("mysql_init failed");
         return false;
     }
 
@@ -54,11 +55,11 @@ bool QueryExecutor::connect(
     return true;
 }
 
-
+// Executing the sql query against the database
 QueryResult QueryExecutor::execute(const std::string& sql)
 {
     QueryResult result;
-
+    // Checking if the connection is open
     if (connection_ == nullptr)
     {
         result.success = false;
@@ -82,6 +83,7 @@ QueryResult QueryExecutor::execute(const std::string& sql)
         return result;
     }
 
+    // Getting the column names from the result
     int columns = mysql_num_fields(res);
 
     MYSQL_FIELD* fields = mysql_fetch_fields(res);
@@ -91,6 +93,7 @@ QueryResult QueryExecutor::execute(const std::string& sql)
         result.columnNames.push_back(fields[i].name);
     }
 
+    // Getting the rows from the result
     MYSQL_ROW row;
 
     while ((row = mysql_fetch_row(res)))
@@ -108,13 +111,17 @@ QueryResult QueryExecutor::execute(const std::string& sql)
     }
 
     mysql_free_result(res);
+    result.rowsAffected = mysql_affected_rows(connection_);
+    std::cout << "Affected rows: "
+          << result.rowsAffected
+          << std::endl;
 
     result.success = true;
 
     return result;
 }
 
-
+// Disconnecting from the server
 void QueryExecutor::disconnect()
 {
     if (connection_)

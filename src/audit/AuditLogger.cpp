@@ -22,6 +22,14 @@ void AuditLogger::log(const AuditEntry& entry)
 
     out << "========================================\n";
 
+    out << "Timestamp: "
+    << entry.timestamp
+    << "\n";
+
+    out << "Status: "
+        << entry.status
+        << "\n";
+
     out << "Query: "
         << entry.query
         << "\n";
@@ -45,6 +53,17 @@ void AuditLogger::log(const AuditEntry& entry)
     out << "PII Columns: "
         << vectorToString(entry.piiColumns)
         << "\n";
+
+    out << "Rows returned/affected: "
+    << entry.rowsAffected
+    << "\n";
+
+    if (!entry.errorMessage.empty())
+    {
+        out << "Error: "
+            << entry.errorMessage
+            << "\n";
+    }
 
     out << "========================================\n\n";
 }

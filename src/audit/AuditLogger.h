@@ -5,12 +5,21 @@
 
 struct AuditEntry
 {
+    std::string timestamp;
+
     std::string query;
     std::string statementType;
     std::string statementOperation;
+
     std::vector<std::string> tables;
     std::vector<std::string> columns;
+
     std::vector<std::string> piiColumns;
+
+    std::string status;
+    std::string errorMessage;
+
+    int rowsAffected = 0;
 };
 
 class AuditLogger

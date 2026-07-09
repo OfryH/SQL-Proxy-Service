@@ -1,7 +1,7 @@
 #include "PiiClassifier.h"
 #include <algorithm>
 
-
+// Returns a vector for the columns with the PII classification
 std::vector<ColumnClassification> PiiClassifier::classify(
     const std::vector<std::string>& columns)
 {
@@ -18,7 +18,7 @@ std::vector<ColumnClassification> PiiClassifier::classify(
     return result;
 }
 
-
+// Checking if a column is PII or not
 PiiType PiiClassifier::classifyColumn(const std::string& column)
 {
     std::string lower = column;

@@ -51,9 +51,7 @@ bool DatabaseConfig::load(const std::string& path)
             policyFile = value;  
     }
 
-    Logger::info("Config loaded. Host: " + host);
-    Logger::info("logfile loaded. logfile: " + logFile);
-    Logger::info("policy loaded. policyfile: " + policyFile);
+    
     return true;
 }
 
