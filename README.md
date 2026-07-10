@@ -181,23 +181,28 @@ The masking rules are applied only to columns classified as PII by the PiiClassi
 
 ## AuditLogger
 
-Creates an audit record for every query. 
+Creates an audit record for every processed query.
 
-Audit records are stored in: 
-logs/audit.log 
+Audit records are stored in:
 
-The audit contains:
+`logs/audit.log`
 
-- Timestamp
-- Query
-- Execution status
-- Statement type
-- Operation
-- Tables
-- Columns
-- Detected PII columns
-- Rows returned/affected
-- Error messages when relevant
+Each audit record contains:
+
+
+
+| Field | Why it is logged |
+|-------|-------------------|
+| Timestamp | Records when the query was processed, making it possible to reconstruct the sequence of events. |
+| Status | Indicates whether the query succeeded, was rejected by policy, was invalid, or failed during execution, allowing quick identification of the outcome. |
+| Query | Preserves the original SQL statement for auditing and troubleshooting. |
+| Type | Distinguishes between SELECT, DML, and DDL statements for high-level analysis. |
+| Operation | Records the exact SQL operation (SELECT, INSERT, UPDATE, DELETE, CREATE, ALTER, DROP) to provide more detailed audit information. |
+| Tables | Identifies which database tables were accessed or modified. |
+| Columns | Shows which columns were read or updated, helping identify access to sensitive data. |
+| PII Columns | Indicates which sensitive columns were detected together with their classification, demonstrating which data required masking. |
+| Rows returned/affected | Shows the impact of the query by reporting the number of rows returned for SELECT statements or affected by DML statements. |
+| Error | Recorded only when a query fails or is rejected, providing the reason for the failure to simplify troubleshooting. |
 
 ---
 
