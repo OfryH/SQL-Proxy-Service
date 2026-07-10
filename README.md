@@ -48,15 +48,18 @@ The proxy supports:
 - Docker Compose
 
 ---
-Clone the repository and navigate to the project directory
 
-## Running the service
+## Running the service 
+
+Clone the repository and navigate to the project directory
 
 Start containers in detached mode:
 
 ```bash
 docker compose up --build -d
 ```
+The service starts a MySQL container and the SQL proxy container. 
+
 The SQL Proxy CLI can then be accessed with:
 
 ```bash
@@ -69,7 +72,6 @@ Application logs can be viewed with:
 docker logs -f sql_proxy
 ```
 
-The service starts a MySQL container and the SQL proxy container.
 
 
 ## Configuration
@@ -82,16 +84,23 @@ config/
 
 ### database.conf
 
-Contains the database connection configuration and runtime paths.
+Contains the database connection settings and runtime paths used by the proxy.
 
-Example:  
-host=mysql  
+Example:
+
+```text
+host=mysql
 port=3306
-user=proxy_user  
-password=password  
-database=sql_proxy_demo  
-LOG_FILE=logs/audit.log  
-POLICY_FILE=config/policy.conf  
+user=proxy_user
+password=password
+database=sql_proxy_demo
+LOG_FILE=logs/audit.log
+POLICY_FILE=config/policy.conf
+```
+
+The connection settings (`host`, `port`, `user`, `password`, and `database`) must match the MySQL service configuration defined in `docker-compose.yml`. The proxy uses these values to establish the database connection at startup.
+
+`LOG_FILE` specifies the location of the audit log, and `POLICY_FILE` specifies the policy configuration file loaded by the proxy.
 
 ### policy.conf
 
@@ -130,12 +139,13 @@ config/policy.conf
 
 
 Example:
-ALLOW_SELECT=true
-ALLOW_INSERT=true
-ALLOW_UPDATE=true
-ALLOW_DELETE=false
-ALLOW_DDL=false
-
+```text
+ALLOW_SELECT=true 
+ALLOW_INSERT=true 
+ALLOW_UPDATE=true 
+ALLOW_DELETE=false 
+ALLOW_DDL=false 
+```
 
 The policy configuration is designed to control potentially destructive database operations.
 
@@ -160,7 +170,7 @@ Supported classifications:
 | credit_card | PII.CreditCard |
 
 The classifier uses an exact column name match approach. Only columns with these exact names are classified as PII. 
-Other columns containing similar information but with different names are not automatically classified.
+Other columns containing similar information but with different names are not classified.
 
 ## DataMasker
 
@@ -322,9 +332,11 @@ Complex queries (joins, subqueries, aliases) are not fully supported.
 PII classification is based on column names. 
 
 Only predefined PII column names are detected: 
+```text
   email 
   phone 
-  credit_card 
+  credit_card
+``` 
   
 DDL statements are analyzed and authorized, but the proxy does not perform PII detection on schema changes. For example, adding a new sensitive column through ALTER TABLE is not automatically classified. 
 
